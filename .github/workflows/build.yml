@@ -1,0 +1,33 @@
+name: Build
+
+on:
+    push:
+        branches:
+            - main
+    workflow_dispatch:
+
+jobs:
+    build:
+        name: Build executables
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v3
+                with:
+                    submodules: true
+
+            -   name: Update main branch code
+                run: git pull
+                working-directory: resources/
+
+            -   name: Install Neutralino.js globally
+                run: npm install -g @neutralinojs/neu
+
+            -   name: Build
+                run: neu build --release
+
+            -   name: Upload artifacts
+                uses: actions/upload-artifact@v3
+                with:
+                    name: dist
+                    path: dist/Mapua100-release.zip
